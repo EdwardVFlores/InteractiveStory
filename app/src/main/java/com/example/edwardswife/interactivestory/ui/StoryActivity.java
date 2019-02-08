@@ -15,6 +15,8 @@ import com.example.edwardswife.interactivestory.R;
 import com.example.edwardswife.interactivestory.model.Page;
 import com.example.edwardswife.interactivestory.model.Story;
 
+import java.util.Stack;
+
 public class StoryActivity extends AppCompatActivity {
 
     public static final String TAG = StoryActivity.class.getSimpleName();
@@ -25,6 +27,7 @@ public class StoryActivity extends AppCompatActivity {
     private TextView storyTextView;
     private Button choice1Button;
     private Button choice2Button;
+    private Stack<Integer> pageStack = new Stack<Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,8 @@ public class StoryActivity extends AppCompatActivity {
     }
 
     private void loadPage(int pageNumber) {
+        pageStack.push(pageNumber);
+
         final Page page = story.getPage(pageNumber);
         Drawable image = ContextCompat.getDrawable(this, page.getImageID());
         storyImageView.setImageDrawable(image);
@@ -90,5 +95,15 @@ public class StoryActivity extends AppCompatActivity {
                 loadPage(nextPage);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        pageStack.pop();
+        if(pageStack.isEmpty()) {
+            super.onBackPressed();
+        } else{
+            loadPage(pageStack.pop());
+        }
     }
 }
